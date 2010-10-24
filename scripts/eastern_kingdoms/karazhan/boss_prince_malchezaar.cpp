@@ -249,7 +249,7 @@ struct MANGOS_DLL_DECL boss_malchezaarAI : public ScriptedAI
             if (pInfernal && pInfernal->isAlive())
             {
                 pInfernal->SetVisibility(VISIBILITY_OFF);
-                pInfernal->SetDeathState(JUST_DIED);
+                pInfernal->setDeathState(JUST_DIED);
             }
         }
         infernals.clear();

@@ -39,7 +39,7 @@ struct MANGOS_DLL_DECL boss_lordalexeibarovAI : public ScriptedAI
         Immolate_Timer = 7000;
         VeilofShadow_Timer = 15000;
 
-        m_creature->LoadCreatureAddon();
+        m_creature->LoadCreaturesAddon();
     }
 
     void JustDied(Unit *killer)

@@ -721,7 +721,7 @@ struct MANGOS_DLL_DECL npc_jaina_and_sylvana_HRextroAI : public npc_escortAI
         {
             case 3:
                 m_pInstance->SetData(TYPE_ICE_WALL_01, IN_PROGRESS);
-                if(GameObject* pGate = m_creature->SummonGameobject(GO_ICE_WALL, 5540.39f, 2086.48f, 731.066f, 1.00057f, 0))
+                if(GameObject* pGate = m_creature->SummonGameObject(GO_ICE_WALL, 5540.39f, 2086.48f, 731.066f, 1.00057f, 0))
                 {
                    m_uiIceWallGUID = pGate->GetGUID();
                    pGate->SetGoState(GO_STATE_READY);
@@ -1016,7 +1016,7 @@ struct MANGOS_DLL_DECL npc_jaina_and_sylvana_HRextroAI : public npc_escortAI
               JumpNextStep(6000);
               break;
            case 11:
-                if(GameObject* pCave = m_creature->SummonGameobject(GO_CAVE, 5275.28f, 1694.23f, 786.147f, 0.981225f, 0))
+                if(GameObject* pCave = m_creature->SummonGameObject(GO_CAVE, 5275.28f, 1694.23f, 786.147f, 0.981225f, 0))
                    pCave->SetGoState(GO_STATE_READY);
                    m_creature->CastSpell(m_creature, SPELL_SHIELD_DISRUPTION,false);
                    m_creature->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
@@ -1097,7 +1097,7 @@ struct MANGOS_DLL_DECL npc_jaina_and_sylvana_HRextroAI : public npc_escortAI
          switch(Count)
          {
             case 2:
-              if(GameObject* pGate = m_creature->SummonGameobject(GO_ICE_WALL, 5494.3f, 1978.27f, 736.689f, 1.0885f, 0))
+              if(GameObject* pGate = m_creature->SummonGameObject(GO_ICE_WALL, 5494.3f, 1978.27f, 736.689f, 1.0885f, 0))
               {
                  if(pLichKing && pLichKing->isAlive())
                     DoScriptText(SAY_LICH_KING_WALL_02, pLichKing);
@@ -1106,7 +1106,7 @@ struct MANGOS_DLL_DECL npc_jaina_and_sylvana_HRextroAI : public npc_escortAI
               }
               break;
             case 3:
-              if(GameObject* pGate = m_creature->SummonGameobject(GO_ICE_WALL, 5434.27f, 1881.12f, 751.303f, 0.923328f, 0))
+              if(GameObject* pGate = m_creature->SummonGameObject(GO_ICE_WALL, 5434.27f, 1881.12f, 751.303f, 0.923328f, 0))
               {
                  if(pLichKing && pLichKing->isAlive())
                     DoScriptText(SAY_LICH_KING_WALL_03, pLichKing);
@@ -1115,7 +1115,7 @@ struct MANGOS_DLL_DECL npc_jaina_and_sylvana_HRextroAI : public npc_escortAI
               }
               break;
             case 4:
-              if(GameObject* pGate = m_creature->SummonGameobject(GO_ICE_WALL, 5323.61f, 1755.85f, 770.305f, 0.784186f, 0))
+              if(GameObject* pGate = m_creature->SummonGameObject(GO_ICE_WALL, 5323.61f, 1755.85f, 770.305f, 0.784186f, 0))
               {
                  if(pLichKing && pLichKing->isAlive())
                     DoScriptText(SAY_LICH_KING_WALL_04, pLichKing);

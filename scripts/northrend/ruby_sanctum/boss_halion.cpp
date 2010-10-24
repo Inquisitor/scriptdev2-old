@@ -544,7 +544,7 @@ struct MANGOS_DLL_DECL boss_halion_twilightAI : public BSWScriptedAI
             case 2:           //To two realms
                 pInstance->SetData(TYPE_HALION_EVENT, IN_PROGRESS);
                 DoScriptText(-1666109,m_creature);
-                m_creature->SummonGameobject(GO_HALION_PORTAL_3, SpawnLoc[0].x, SpawnLoc[0].y, SpawnLoc[0].z, 0, 0);
+                m_creature->SummonGameObject(GO_HALION_PORTAL_3, SpawnLoc[0].x, SpawnLoc[0].y, SpawnLoc[0].z, 0, 0);
                 if (GameObject* pGoPortal = pInstance->instance->GetGameObject(pInstance->GetData64(GO_HALION_PORTAL_3)))
                       pGoPortal->SetPhaseMask(32,true);
                 doCast(SPELL_TWILIGHT_DIVISION);

@@ -138,7 +138,7 @@ void hyjalAI::EnterEvadeMode()
     m_creature->RemoveAllAuras();
     m_creature->DeleteThreatList();
     m_creature->CombatStop(true);
-    m_creature->LoadCreatureAddon();
+    m_creature->LoadCreaturesAddon();
 
     if (m_creature->isAlive())
         m_creature->GetMotionMaster()->MoveTargetedHome();
@@ -223,7 +223,7 @@ void hyjalAI::JustSummoned(Creature* pSummoned)
     }
 
     // Check if creature is a boss.
-    if (pSummoned->IsWorldBoss())
+    if (pSummoned->isWorldBoss())
     {
         if (!m_bIsFirstBossDead)
             m_uiBossGUID[0] = pSummoned->GetGUID();
