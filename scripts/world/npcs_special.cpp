@@ -2168,6 +2168,139 @@ CreatureAI* GetAI_npc_death_knight_gargoyle(Creature* pCreature)
     return new npc_death_knight_gargoyle(pCreature);
 }
 
+struct MANGOS_DLL_DECL npc_valkyr  : public ScriptedAI
+{
+    enum ValkyrSpells
+{
+    SPELL_SMITE_N = 71841,
+    SPELL_SMITE_H =71842
+};
+
+    npc_valkyr(Creature* pCreature) : ScriptedAI(pCreature)
+    {
+        Reset();
+    }
+    uint32 m_ui_valkyr_Timer;
+    bool inCombat;
+    Unit *owner;
+    uint32 Valkyr_Smite;
+
+
+
+    void Reset() 
+    {
+     owner = m_creature->GetOwner();
+     if (!owner) return;
+     Valkyr_Smite= m_creature->GetCreatureInfo()->Entry == 38392 ? SPELL_SMITE_H : SPELL_SMITE_N;
+
+     m_creature->SetLevel(owner->getLevel());
+     m_creature->setFaction(owner->getFaction());
+
+     m_creature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GUARD);
+     m_creature->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
+     m_creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 50331648);
+     m_creature->SetUInt32Value(UNIT_FIELD_BYTES_1, 50331648);
+     m_creature->AddSplineFlag(SPLINEFLAG_FLYING);
+
+     inCombat = false;
+     m_ui_valkyr_Timer = urand(1500,2000);
+
+     float fPosX, fPosY, fPosZ;
+     owner->GetPosition(fPosX, fPosY, fPosZ);
+
+     m_creature->NearTeleportTo(fPosX, fPosY, fPosZ+4.0f, m_creature->GetAngle(owner));
+
+
+     if (owner && !m_creature->hasUnitState(UNIT_STAT_FOLLOW))
+        {
+            m_creature->GetMotionMaster()->Clear(false);
+            m_creature->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST + 3.0f, m_creature->GetAngle(owner));
+             
+        }
+
+      if(owner->IsPvP())
+                 m_creature->SetPvP(true);
+      if(owner->IsFFAPvP())
+                 m_creature->SetFFAPvP(true);
+    }
+
+    void EnterEvadeMode()
+    {
+     if (m_creature->IsInEvadeMode() || !m_creature->isAlive())
+          return;
+
+        inCombat = false;
+
+        m_creature->AttackStop();
+        m_creature->CombatStop(true);
+        if (owner && !m_creature->hasUnitState(UNIT_STAT_FOLLOW))
+        {
+            m_creature->GetMotionMaster()->Clear(false);
+            m_creature->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST + 3.0f, m_creature->GetAngle(owner));
+        }
+    }
+
+    void AttackStart(Unit* pWho)
+    {
+      if (!pWho) return;
+
+      if (m_creature->Attack(pWho, true))
+        {
+            m_creature->clearUnitState(UNIT_STAT_FOLLOW);
+            m_creature->SetInCombatWith(pWho);
+            pWho->SetInCombatWith(m_creature);
+            m_creature->AddThreat(pWho, 100.0f);
+            DoStartMovement(pWho, 3.0f);
+            SetCombatMovement(true);
+            inCombat = true;
+        }
+    }
+
+    void UpdateAI(const uint32 uiDiff)
+    {
+
+        if (!owner || !owner->IsInWorld())
+        {
+            m_creature->ForcedDespawn();
+            return;
+        }
+
+        if (!m_creature->getVictim())
+            if (owner && owner->getVictim())
+                AttackStart(owner->getVictim());
+
+        if (m_creature->getVictim() && m_creature->getVictim() != owner->getVictim())
+                AttackStart(owner->getVictim());
+
+        if (inCombat && !m_creature->getVictim())
+        {
+            EnterEvadeMode();
+            return;
+        }
+
+        float fPosX, fPosY, fPosZ;
+        owner->GetPosition(fPosX, fPosY, fPosZ);
+        float mPosX, mPosY, mPosZ;
+        m_creature->GetPosition(mPosX, mPosY, mPosZ);
+        if (fabsf(mPosZ-fPosZ-4.0)> 1.0 )
+            m_creature->SendMonsterMoveWithSpeed(mPosX,mPosY,fPosZ+4.0,200);
+
+        if (!inCombat) return;
+
+        if (m_ui_valkyr_Timer <= uiDiff)
+        {
+            DoCastSpellIfCan(m_creature->getVictim(), Valkyr_Smite);
+            m_ui_valkyr_Timer = urand(1500,2000);
+        }
+        else m_ui_valkyr_Timer -= uiDiff;
+    }
+};
+
+CreatureAI* GetAI_npc_valkyr(Creature* pCreature)
+{
+    return new npc_valkyr(pCreature);
+}
+
 void AddSC_npcs_special()
 {
     Script* newscript;
@@ -2276,5 +2409,10 @@ void AddSC_npcs_special()
     newscript = new Script;
     newscript->Name = "npc_death_knight_gargoyle";
     newscript->GetAI = &GetAI_npc_death_knight_gargoyle;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "npc_valkyr";
+    newscript->GetAI = &GetAI_npc_valkyr;
     newscript->RegisterSelf();
 }
