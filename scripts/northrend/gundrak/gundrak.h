@@ -22,8 +22,8 @@ enum
     TYPE_ECK               = 4,
 
     NPC_SLADRAN            = 29304,
-    NPC_MOORABI            = 29307,
-    NPC_COLOSSUS           = 29305,
+    NPC_MOORABI            = 29305,
+    NPC_COLOSSUS           = 29307,
     NPC_ELEMENTAL          = 29573,
     NPC_LIVIN_MOJO         = 29830,
     NPC_GALDARAH           = 29306,
@@ -78,10 +78,11 @@ class MANGOS_DLL_DECL instance_gundrak : public ScriptedInstance
         uint64 m_uiSnakeKeyGUID;
         uint64 m_uiMammothKeyGUID;
         uint64 m_uiTrollKeyGUID;
+        uint64 m_uiRhinoKeyGUID;
         uint64 m_uiAltarOfSladranGUID;
         uint64 m_uiAltarOfMoorabiGUID;
         uint64 m_uiAltarOfColossusGUID;
-        uint64 m_uiBridgeGUID;
+        uint64 m_uiCollisionGUID;
 
         uint64 m_uiSladranGUID;
         uint64 m_uiElementalGUID;

@@ -16,11 +16,10 @@
 
 /* ScriptData
 SDName: boss_lord_marrowgar
-SD%Complete: 80%
+SD%Complete: 85%
 SDComment: by /dev/rsa
 SDCategory: Icecrown Citadel
 EndScriptData */
-// Need implement properly traectory for cold flames
 #include "precompiled.h"
 #include "def_spire.h"
 enum
@@ -77,7 +76,7 @@ struct MANGOS_DLL_DECL boss_lord_marrowgarAI : public BSWScriptedAI
     void JustSummoned(Creature* summoned)
     {
         if(!pInstance || !summoned) return;
-        summoned->SetCreatorGUID(m_creature->GetGUID());
+        summoned->SetCreatorGuid(m_creature->GetObjectGuid());
     }
 
     void JustReachedHome()
@@ -115,9 +114,9 @@ struct MANGOS_DLL_DECL boss_lord_marrowgarAI : public BSWScriptedAI
         if (!pTarget || !pTarget->isAlive()) return;
         float fPosX, fPosY, fPosZ;
         pTarget->GetPosition(fPosX, fPosY, fPosZ);
-        if (Unit* pSpike = doSummon(NPC_BONE_SPIKE, fPosX, fPosY, fPosZ))
+        if (Unit* pSpike = doSummon(NPC_BONE_SPIKE, fPosX, fPosY, fPosZ + 0.5f))
         {
-            pSpike->SetOwnerGUID(m_creature->GetGUID());
+            pSpike->SetOwnerGuid(m_creature->GetObjectGuid());
             pSpike->SetInCombatWith(pTarget);
             pSpike->AddThreat(pTarget, 1000.0f);
         }
@@ -262,7 +261,7 @@ struct MANGOS_DLL_DECL mob_coldflameAI : public BSWScriptedAI
     void JustSummoned(Creature* summoned)
     {
         if(!m_pInstance || !summoned) return;
-        summoned->SetCreatorGUID(m_creature->GetGUID());
+        summoned->SetCreatorGuid(m_creature->GetObjectGuid());
     }
 
     void UpdateAI(const uint32 uiDiff)
@@ -272,11 +271,11 @@ struct MANGOS_DLL_DECL mob_coldflameAI : public BSWScriptedAI
             m_creature->ForcedDespawn();
         }
 
-        if (!m_creature->GetCreatorGUID()) return;
+        if (m_creature->GetCreatorGuid().IsEmpty()) return;
 
         if (!isCreator)
         {
-            if (m_creature->GetCreatorGUID() == m_pInstance->GetData64(NPC_LORD_MARROWGAR))
+            if (m_creature->GetCreatorGuid() == m_pInstance->GetData64(NPC_LORD_MARROWGAR))
             {
                 isFirst = true;
                 uint32 m_tmpDirection = m_pInstance->GetData(DATA_DIRECTION);
