@@ -3382,6 +3382,18 @@
 			Name="system"
 			>
 			<File
+				RelativePath="..\system\MangosdRev.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\system\ScriptLoader.cpp"
 				>
 			</File>
