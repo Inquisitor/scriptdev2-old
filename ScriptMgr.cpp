@@ -90,13 +90,13 @@ void InitScriptLibrary()
 
     //Get configuration file
     if (!SD2Config.SetSource(_SCRIPTDEV2_CONFIG))
-        error_log("SD2: Unable to open configuration file. Database will be unaccessible. Configuration values will use default.");
+        error_log("SD2: Unable to open configuration file %s. Database will be unaccessible. Configuration values will use default.", _SCRIPTDEV2_CONFIG);
     else
         outstring_log("SD2: Using configuration file %s",_SCRIPTDEV2_CONFIG);
 
     //Check config file version
     if (SD2Config.GetIntDefault("ConfVersion", 0) != SD2_CONF_VERSION)
-        error_log("SD2: Configuration file version doesn't match expected version. Some config variables may be wrong or missing.");
+        error_log("SD2: Configuration file version doesn't match expected version %s. Some config variables may be wrong or missing.", SD2_CONF_VERSION);
 
     outstring_log("");
 
