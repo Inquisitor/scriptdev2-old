@@ -96,7 +96,7 @@ void InitScriptLibrary()
 
     //Check config file version
     if (SD2Config.GetIntDefault("ConfVersion", 0) != SD2_CONF_VERSION)
-        error_log("SD2: Configuration file version doesn't match expected version %s. Some config variables may be wrong or missing.", SD2_CONF_VERSION);
+        error_log("SD2: Configuration file version doesn't match expected version %u. Some config variables may be wrong or missing.", SD2_CONF_VERSION);
 
     outstring_log("");
 
