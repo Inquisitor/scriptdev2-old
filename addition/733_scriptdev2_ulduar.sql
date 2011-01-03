@@ -1,4 +1,4 @@
-/* ULDUAR from Xfurry*/
+﻿/* ULDUAR from Xfurry*/
 -- ids may need to be rewritten
 DELETE from `script_texts` where `entry` between -1603500 and -1603000;
 INSERT INTO `script_texts` (`entry`, `content_default`, `content_loc1`, `content_loc2`, `content_loc3`, `content_loc4`, `content_loc5`, `content_loc6`, `content_loc7`, `content_loc8`, `sound`, `type`, `language`, `emote`, `comment`) VALUES 
