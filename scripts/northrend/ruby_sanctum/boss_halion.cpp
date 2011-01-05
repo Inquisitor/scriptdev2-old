@@ -94,9 +94,11 @@ enum
     SAY_HALION_PHASE_2              = -1666108, //17507 You will find only suffering within the realm of Twilight. Enter if you dare.
     SAY_HALION_PHASE_3              = -1666109, //17508 I am the light AND the darkness! Cower mortals before the Herald of Deathwing!
     EMOTE_WARNING                   = -1666110, //orbs charge warning
-    EMOTE_REAL                      = -1666111, // To real world message
-    EMOTE_TWILIGHT                  = -1666112, // To twilight world message
-    EMOTE_NEITRAL                   = -1666113, // Halion reveal HP message
+    EMOTE_REAL_PUSH                 = -1666111, // Out of real world message
+    EMOTE_REAL_PULL                 = -1666112, // To real world message
+    EMOTE_TWIL_PUSH                 = -1666113, // Out of twilight world message
+    EMOTE_TWIL_PULL                 = -1666114, // To twilight world message
+    EMOTE_NEITRAL                   = -1666115, // Halion reveal HP message
 };
 
 static Locations SpawnLoc[]=
@@ -720,6 +722,7 @@ struct MANGOS_DLL_DECL mob_halion_controlAI : public BSWScriptedAI
     Creature* pHalionTwilight;
     uint32 m_lastBuffReal, m_lastBuffTwilight;
     bool m_detectplayers;
+    uint8 m_lastCorpReal;
 
     void Reset()
     {
@@ -733,6 +736,7 @@ struct MANGOS_DLL_DECL mob_halion_controlAI : public BSWScriptedAI
         SetCombatMovement(false);
         m_lastBuffReal = 0;
         m_lastBuffTwilight = 0;
+        m_lastCorpReal = 50;
         m_creature->SetActiveObjectState(true);
         pInstance->SetData(TYPE_COUNTER, COUNTER_OFF);
         pInstance->SetData(TYPE_HALION_EVENT, NOT_STARTED);
@@ -812,7 +816,18 @@ struct MANGOS_DLL_DECL mob_halion_controlAI : public BSWScriptedAI
                     doRemove(m_lastBuffReal, pHalionReal);
                 }
                 doCast(Buff[buffnum].real, pHalionReal);
+                if (m_lastCorpReal - Buff[buffnum].disp_corp < 0)
+                {
+                    DoScriptText(EMOTE_REAL_PULL, pHalionReal);
+                    DoScriptText(EMOTE_TWIL_PUSH, pHalionTwilight);
+                }
+                else if (m_lastCorpReal - Buff[buffnum].disp_corp > 0)
+                {
+                    DoScriptText(EMOTE_REAL_PUSH, pHalionReal);
+                    DoScriptText(EMOTE_TWIL_PULL, pHalionTwilight);
+                }
                 m_lastBuffReal = Buff[buffnum].real;
+                m_lastCorpReal = (uint8)Buff[buffnum].disp_corp;
             }
 
             if (!m_lastBuffTwilight || m_lastBuffTwilight != Buff[buffnum].twilight)
@@ -827,7 +842,7 @@ struct MANGOS_DLL_DECL mob_halion_controlAI : public BSWScriptedAI
 
             debug_log("ruby_sanctum: Buff num = %u, m_diff = %d ", buffnum, m_diff);
 
-            pInstance->SetData(TYPE_COUNTER, (uint32)Buff[buffnum].disp_corp);
+            pInstance->SetData(TYPE_COUNTER, m_lastCorpReal);
 
         }
 
@@ -910,7 +925,7 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
 
         if (m_timer - 6000 <= uiDiff && !m_warning)
         {
-            DoScriptText(-1666110,m_creature);
+            DoScriptText(EMOTE_WARNING, m_creature);
             m_warning = true;
         }
 
