@@ -25,6 +25,8 @@ enum
 
     COUNTER_OFF                    = 255,
 
+    COUNTER_OFF                    = 255,
+
     TYPE_EVENT_TIMER               = 50,
     TYPE_EVENT_NPC                 = 51,
 
