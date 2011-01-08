@@ -32,7 +32,7 @@ enum
     //SPELLS
     //All
     SPELL_TWILIGHT_PRECISION                    = 78243, // Increases Halion's chance to hit by 5% and decreases all players' chance to dodge by 20%
-    SPELL_BERSERK                               = 26663, // Increases the caster's attack and movement speeds by 150% and all damage it deals by 500% for 5 min.  Also grants immunity to Taunt effects.
+    SPELL_BERSERK                               = 47008, // Increases the caster's attack and movement speeds by 150% and all damage it deals by 900% for 30 min.
     SPELL_START_PHASE2                          = 74808, // Phases the caster into the Twilight realm, leaving behind a large rift.
     SPELL_TWILIGHT_ENTER                        = 74807, // Phases the caster into the Twilight realm - phase 32
     SPELL_TWILIGHT_ENTER2                       = 74812, //
@@ -132,6 +132,7 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
         {
             pInstance->SetData(TYPE_HALION, NOT_STARTED);
             pInstance->SetData(TYPE_HALION_EVENT, FAIL);
+            pInstance->SetData(TYPE_HALION_BERSERK, HALION_BERSERK_TIMER);
         }
 
         resetTimers();
@@ -147,6 +148,7 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
                pGoPortal->Delete();
         if (GameObject* pGoPortal = pInstance->instance->GetGameObject(pInstance->GetData64(GO_HALION_PORTAL_3)))
                pGoPortal->Delete();
+        doRemoveFromAll(SPELL_TWILIGHT_ENTER);
     }
 
     void MoveInLineOfSight(Unit* pWho)
@@ -241,6 +243,7 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
         doCast(SPELL_TWILIGHT_PRECISION);
         m_creature->SetInCombatWithZone();
         pInstance->SetData(TYPE_HALION, IN_PROGRESS);
+        pInstance->SetData(TYPE_HALION_BERSERK, HALION_BERSERK_TIMER);
         DoScriptText(-1666101,m_creature);
     }
 
@@ -276,13 +279,38 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
+        uint32 timer;
+
         switch (getStage())
         {
             case 0: //PHASE 1 PHYSICAL REALM
                 timedCast(SPELL_FLAME_BREATH, uiDiff);
                 timedCast(SPELL_FIERY_COMBUSTION, uiDiff);
-                timedCast(SPELL_METEOR, uiDiff);
+                // Berserk timer in phase 1 is managed by Halion itself
+                timer = pInstance->GetData(TYPE_HALION_BERSERK);
+                if (timer < uiDiff)
+                {
+                    timer = 0;
+                    pInstance->SetData(TYPE_HALION_BERSERK,0);
+                }
+                else
+                {
+                    timer -= uiDiff;
+                    pInstance->SetData(TYPE_HALION_BERSERK, timer);
+                }
                 if (m_creature->GetHealthPercent() < 75.0f) setStage(1);
+                if (this->timedQuery(SPELL_METEOR, uiDiff,true))
+                {
+                    Player * pTargetPlayer = (Player*)(this->doSelectRandomPlayer());
+                    if (!pTargetPlayer) break;
+                    Creature * pMeteor = m_creature->SummonCreature(NPC_METEOR_STRIKE, pTargetPlayer->GetPositionX(), pTargetPlayer->GetPositionY(), pTargetPlayer->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 1000);
+                    if (pMeteor)
+                    {
+                        pMeteor->SetDisplayId(11686);
+                        pMeteor->SetRespawnDelay(7*DAY);
+                        pMeteor->SetActiveObjectState(true);
+                    }
+                }
                 break;
 
             case 1: // Switch to phase 2
@@ -384,7 +412,15 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
                 break;
         }
 
-        timedCast(SPELL_BERSERK, uiDiff);
+        timer = pInstance->GetData(TYPE_HALION_BERSERK);
+        if (!timer)
+        {
+            if (!m_creature->HasAura(SPELL_BERSERK))
+            {
+                DoScriptText(SAY_HALION_BERSERK,m_creature);
+                doCast(SPELL_BERSERK);
+            }
+        }
 
         DoMeleeAttackIfReady();
 
@@ -435,6 +471,7 @@ struct MANGOS_DLL_DECL boss_halion_twilightAI : public BSWScriptedAI
         if (Creature* pReal = m_creature->GetMap()->GetCreature(pInstance->GetData64(NPC_HALION_REAL)))
             if (pReal->isAlive())
                 m_creature->SetHealth(pReal->GetHealth());
+        doRemoveFromAll(SPELL_TWILIGHT_ENTER);
         if (!hasAura(SPELL_TWILIGHT_ENTER))
              doCast(SPELL_TWILIGHT_ENTER);
     }
@@ -564,7 +601,15 @@ struct MANGOS_DLL_DECL boss_halion_twilightAI : public BSWScriptedAI
                 break;
         }
 
-        timedCast(SPELL_BERSERK, uiDiff);
+        uint32 timer = pInstance->GetData(TYPE_HALION_BERSERK);
+        if (!timer)
+        {
+            if (!m_creature->HasAura(SPELL_BERSERK))
+            {
+                DoScriptText(SAY_HALION_BERSERK,m_creature);
+                doCast(SPELL_BERSERK);
+            }
+        }
 
         DoMeleeAttackIfReady();
     }
@@ -754,6 +799,19 @@ struct MANGOS_DLL_DECL mob_halion_controlAI : public BSWScriptedAI
               m_creature->ForcedDespawn();
 
         if (!pInstance) return;
+
+        // Berserk timer in phase 2 and 3 is managed by Halion Control
+        uint32 timer = pInstance->GetData(TYPE_HALION_BERSERK);
+        if (timer < diff)
+        {
+            timer = 0;
+            pInstance->SetData(TYPE_HALION_BERSERK,0);
+        }
+        else
+        {
+            timer -= diff;
+            pInstance->SetData(TYPE_HALION_BERSERK, timer);
+        }
 
         if (timedQuery(SPELL_CORPOREALITY_EVEN, diff))
         {
