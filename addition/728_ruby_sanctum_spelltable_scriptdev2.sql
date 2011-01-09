@@ -26,13 +26,13 @@ INSERT INTO `boss_spell_table` (`entry`, `spellID_N10`, `spellID_N25`, `spellID_
 -- Mob soul consumption
 DELETE FROM `boss_spell_table` WHERE `entry` = 40135;
 INSERT INTO `boss_spell_table` (`entry`, `spellID_N10`, `spellID_N25`, `spellID_H10`, `spellID_H25`, `timerMin_N10`, `timerMin_N25`, `timerMin_H10`, `timerMin_H25`, `timerMax_N10`, `timerMax_N25`, `timerMax_H10`, `timerMax_H25`, `data1`, `data2`, `data3`, `data4`, `locData_x`, `locData_y`, `locData_z`, `CastType`, `isVisualEffect`, `isBugged`) VALUES
-(40135, 74803, 0, 0, 0, 60000, 0, 0, 0, 60000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0),
+(40135, 74803, 0, 0, 0, 59000, 0, 0, 0, 59000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0),
 (40135, 74807, 0, 0, 0, 2000, 0, 0, 0, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
 
 -- Mob fiery combustion
 DELETE FROM `boss_spell_table` WHERE `entry` = 40001;
 INSERT INTO `boss_spell_table` (`entry`, `spellID_N10`, `spellID_N25`, `spellID_H10`, `spellID_H25`, `timerMin_N10`, `timerMin_N25`, `timerMin_H10`, `timerMin_H25`, `timerMax_N10`, `timerMax_N25`, `timerMax_H10`, `timerMax_H25`, `data1`, `data2`, `data3`, `data4`, `locData_x`, `locData_y`, `locData_z`, `CastType`, `isVisualEffect`, `isBugged`) VALUES
-(40001, 74629, 0, 0, 0, 60000, 0, 0, 0, 60000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0),
+(40001, 74629, 0, 0, 0, 59000, 0, 0, 0, 59000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0),
 (40001, 74807, 0, 0, 0, 2000, 0, 0, 0, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);
 
 -- Twilight Halion
