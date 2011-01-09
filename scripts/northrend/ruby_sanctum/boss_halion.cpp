@@ -1184,15 +1184,17 @@ struct MANGOS_DLL_DECL mob_soul_consumptionAI : public BSWScriptedAI
     ScriptedInstance* m_pInstance;
     float m_Size0;
     float m_Size;
+    bool m_auraActive;
 
     void Reset()
     {
         if (!isHeroic()) m_creature->SetPhaseMask(32,true);
-            else m_creature->SetPhaseMask(65535,true);
+            else m_creature->SetPhaseMask(PHASEMASK_ANYWHERE,true);
         SetCombatMovement(false);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         doCast(SPELL_CONSUMPTION_AURA);
+        m_auraActive = true;
         m_Size0 = m_creature->GetObjectScale();
         m_Size = m_Size0;
     }
@@ -1207,11 +1209,16 @@ struct MANGOS_DLL_DECL mob_soul_consumptionAI : public BSWScriptedAI
         if(m_pInstance && m_pInstance->GetData(TYPE_HALION) != IN_PROGRESS)
             m_creature->ForcedDespawn();
 
-//        if (!hasAura(SPELL_TWILIGHT_ENTER))
-//             doCast(SPELL_TWILIGHT_ENTER);
+        // NOTE: 60000 ms despawn timer is set in spelleffect in the core!!
+
+        if (m_auraActive && !hasAura(SPELL_CONSUMPTION_AURA))
+            doCast(SPELL_CONSUMPTION_AURA);
 
         if (timedQuery(SPELL_CONSUMPTION_AURA, uiDiff))
-            m_creature->ForcedDespawn();
+        {
+            doRemove(SPELL_CONSUMPTION_AURA);
+            m_auraActive = false;
+        }
 
         if (doSelectRandomPlayerAtRange(m_Size * 3.0f) && m_Size <= m_Size0 * 3.0f) {
                 m_Size = m_Size*1.01;
@@ -1236,15 +1243,19 @@ struct MANGOS_DLL_DECL mob_fiery_combustionAI : public BSWScriptedAI
     ScriptedInstance* m_pInstance;
     float m_Size0;
     float m_Size;
+    bool m_auraActive;
 
     void Reset()
     {
-        if (!isHeroic()) m_creature->SetPhaseMask(31,true);
-            else m_creature->SetPhaseMask(65535,true);
+        //if (!isHeroic()) m_creature->SetPhaseMask(31,true);
+        //    else m_creature->SetPhaseMask(65535,true);
+        if (isHeroic())
+            m_creature->SetPhaseMask(PHASEMASK_ANYWHERE,true);
         SetCombatMovement(false);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         doCast(SPELL_COMBUSTION_AURA);
+        m_auraActive = true;
         m_Size0 = m_creature->GetObjectScale();
         m_Size = m_Size0;
     }
@@ -1259,8 +1270,16 @@ struct MANGOS_DLL_DECL mob_fiery_combustionAI : public BSWScriptedAI
         if(m_pInstance && m_pInstance->GetData(TYPE_HALION) != IN_PROGRESS)
             m_creature->ForcedDespawn();
 
+        // NOTE: 60000 ms despawn timer is set in spelleffect in the core!!
+
+        if (m_auraActive && !hasAura(SPELL_COMBUSTION_AURA))
+            doCast(SPELL_COMBUSTION_AURA);
+
         if (timedQuery(SPELL_COMBUSTION_AURA, uiDiff))
-            m_creature->ForcedDespawn();
+        {
+            doRemove(SPELL_COMBUSTION_AURA);
+            m_auraActive = false;
+        }
 
         if (doSelectRandomPlayerAtRange(m_Size * 3.0f) && m_Size <= m_Size0 * 3.0f) {
                 m_Size = m_Size*1.01;
