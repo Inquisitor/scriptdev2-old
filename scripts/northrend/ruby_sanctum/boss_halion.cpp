@@ -958,7 +958,7 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         m_direction = 0.0f;
         m_nextdirection = 0.0f;
-        m_timer = 30000;
+        m_timer = 40000;
         m_warning = false;
 
         m_pulsar_N = m_creature->GetMap()->GetCreature(pInstance->GetData64(NPC_SHADOW_PULSAR_N));
