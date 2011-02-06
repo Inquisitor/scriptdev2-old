@@ -45,6 +45,8 @@ enum
     // Orb rotation
     NPC_SHADOW_PULSAR_N            = 40083, //spinning orb N spawn
     NPC_SHADOW_PULSAR_S            = 40100, //spinning orb S spawn
+    NPC_SHADOW_PULSAR_E            = 40468, //spinning orb E spawn
+    NPC_SHADOW_PULSAR_W            = 40469, //spinning orb W spawn
     NPC_ORB_CARRIER                = 40081,
     NPC_ORB_ROTATION_FOCUS         = 40091,
 

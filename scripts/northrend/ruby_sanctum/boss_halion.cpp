@@ -42,6 +42,8 @@ enum
     SPELL_TAIL_LASH                             = 74531, // A sweeping tail strike hits all enemies behind the caster, inflicting 3063 to 3937 damage and stunning them for 2 sec.
     SPELL_TWILIGHT_DIVISION                     = 75063, // Phases the caster, allowing him to exist and act simultaneously in both the material and Twilight realms.
     SPELL_TWILIGHT_CUTTER                       = 77844, // Inflicts 13,875 to 16,125 Shadow damage every second to players touched by the shadow beam
+    SPELL_TWILIGHT_CUTTER_CHANNEL               = 74768, // Channeling shadow cutter visual + trigger 74769
+
     //CORPOREALITY
     SPELL_CORPOREALITY_EVEN                     = 74826, // Deals & receives normal damage
     SPELL_CORPOREALITY_20I                      = 74827, // Damage dealt increased by 10% & Damage taken increased by 15%
@@ -286,6 +288,7 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
             case 0: //PHASE 1 PHYSICAL REALM
                 timedCast(SPELL_FLAME_BREATH, uiDiff);
                 timedCast(SPELL_FIERY_COMBUSTION, uiDiff);
+                timedCast(SPELL_TAIL_LASH, uiDiff);
                 // Berserk timer in phase 1 is managed by Halion itself
                 timer = pInstance->GetData(TYPE_HALION_BERSERK);
                 if (timer < uiDiff)
@@ -405,7 +408,19 @@ struct MANGOS_DLL_DECL boss_halion_realAI : public BSWScriptedAI
             case 8: //PHASE 3 BOTH REALMS
                 timedCast(SPELL_FLAME_BREATH, uiDiff);
                 timedCast(SPELL_FIERY_COMBUSTION, uiDiff);
-                timedCast(SPELL_METEOR, uiDiff);
+                timedCast(SPELL_TAIL_LASH, uiDiff);
+                if (this->timedQuery(SPELL_METEOR, uiDiff,true))
+                {
+                    Player * pTargetPlayer = (Player*)(this->doSelectRandomPlayer());
+                    if (!pTargetPlayer) break;
+                    Creature * pMeteor = m_creature->SummonCreature(NPC_METEOR_STRIKE, pTargetPlayer->GetPositionX(), pTargetPlayer->GetPositionY(), pTargetPlayer->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 1000);
+                    if (pMeteor)
+                    {
+                        pMeteor->SetDisplayId(11686);
+                        pMeteor->SetRespawnDelay(7*DAY);
+                        pMeteor->SetActiveObjectState(true);
+                    }
+                }
                 break;
 
             default:
@@ -577,6 +592,7 @@ struct MANGOS_DLL_DECL boss_halion_twilightAI : public BSWScriptedAI
                 timedCast(SPELL_DUSK_SHROUD, uiDiff);
                 timedCast(SPELL_DARK_BREATH, uiDiff);
                 timedCast(SPELL_SOUL_CONSUMPTION, uiDiff);
+                timedCast(SPELL_TAIL_LASH, uiDiff);
                 if (m_creature->GetHealthPercent() < 50.0f) setStage(2);
                 break;
 
@@ -595,6 +611,7 @@ struct MANGOS_DLL_DECL boss_halion_twilightAI : public BSWScriptedAI
                 timedCast(SPELL_DUSK_SHROUD, uiDiff);
                 timedCast(SPELL_DARK_BREATH, uiDiff);
                 timedCast(SPELL_SOUL_CONSUMPTION, uiDiff);
+                timedCast(SPELL_TAIL_LASH, uiDiff);
                 break;
 
             default:
@@ -925,6 +942,10 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
     uint32 m_timer;
     float m_direction, m_nextdirection;
     bool m_warning;
+    Creature* m_pulsar_N;
+    Creature* m_pulsar_S;
+    Creature* m_pulsar_E;
+    Creature* m_pulsar_W;
 
     void Reset()
     {
@@ -940,23 +961,23 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
         m_timer = 30000;
         m_warning = false;
 
-        Creature* pPulsar1 = m_creature->GetMap()->GetCreature(pInstance->GetData64(NPC_SHADOW_PULSAR_N));
-        if (!pPulsar1 )
+        m_pulsar_N = m_creature->GetMap()->GetCreature(pInstance->GetData64(NPC_SHADOW_PULSAR_N));
+        if (!m_pulsar_N )
         {
             float x,y;
             m_creature->GetNearPoint2D(x, y, FR_RADIUS, m_direction);
-            pPulsar1 = m_creature->SummonCreature(NPC_SHADOW_PULSAR_N, x, y, m_creature->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 5000);
-        } else if (!pPulsar1->isAlive())
-                    pPulsar1->Respawn();
+            m_pulsar_N = m_creature->SummonCreature(NPC_SHADOW_PULSAR_N, x, y, m_creature->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 5000);
+        } else if (!m_pulsar_N->isAlive())
+                    m_pulsar_N->Respawn();
 
-        Creature* pPulsar2 = m_creature->GetMap()->GetCreature(pInstance->GetData64(NPC_SHADOW_PULSAR_S));
-        if (!pPulsar2)
+        m_pulsar_S = m_creature->GetMap()->GetCreature(pInstance->GetData64(NPC_SHADOW_PULSAR_S));
+        if (!m_pulsar_S)
         {
             float x,y;
             m_creature->GetNearPoint2D(x, y, FR_RADIUS, m_direction + M_PI_F);
-            pPulsar2 = m_creature->SummonCreature(NPC_SHADOW_PULSAR_S, x, y, m_creature->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 5000);
-        } else if (!pPulsar2->isAlive())
-                    pPulsar2->Respawn();
+            m_pulsar_S = m_creature->SummonCreature(NPC_SHADOW_PULSAR_S, x, y, m_creature->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 5000);
+        } else if (!m_pulsar_S->isAlive())
+                    m_pulsar_S->Respawn();
     }
 
     void AttackStart(Unit *who)
@@ -981,10 +1002,45 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
             debug_log("EventMGR: creature %u send direction %u ",m_creature->GetEntry(),pInstance->GetData(DATA_ORB_DIRECTION));
         }
 
-        if (m_timer - 6000 <= uiDiff && !m_warning)
+        if (m_timer - 3000 <= uiDiff && !m_warning)
         {
             DoScriptText(EMOTE_WARNING, m_creature);
             m_warning = true;
+        }
+
+        if (m_timer > 10000 && m_timer < 20000)
+        {
+            m_pulsar_N->CastSpell(m_pulsar_S, SPELL_TWILIGHT_CUTTER_CHANNEL, true);
+
+            Map* pMap = m_creature->GetMap();
+            Map::PlayerList const &pList = pMap->GetPlayers();
+                if (pList.isEmpty()) return;
+
+            for(Map::PlayerList::const_iterator i = pList.begin(); i != pList.end(); ++i)
+            {
+                if (Player* player = i->getSource())
+                {
+                    if (!player) continue;
+
+                    if (player->isGameMaster()) continue;
+
+                    if (!player->IsInMap(m_creature)) continue;
+
+                    if (player->isAlive())
+                    {
+                        float AB = m_pulsar_N->GetDistance2d(m_pulsar_S)+1;
+                        float BC = m_pulsar_N->GetDistance2d(player)+1;
+                        float AC = m_pulsar_S->GetDistance2d(player)+1;
+                        float p = (AB + BC + AC)/2;
+                        float DC = (2*sqrt(p*(p-AB)*(p-BC)*(p-AC)))/AB;
+                        //debug_log("DC = %06.6f (AB = %06.6f, BC = %06.6f, AC = %06.6f, p = %06.6f)", DC, AB, BC, AC, p);
+                        if (DC < 3.75f || DC > 52.0f)
+                        {
+                            player->CastSpell(player, SPELL_TWILIGHT_CUTTER, true, 0, 0, m_pulsar_N->GetGUID());
+                        }
+                    }
+                }
+            }
         }
 
         if (m_timer <= uiDiff)
@@ -992,7 +1048,7 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
             float x,y;
             m_creature->GetNearPoint2D(x, y, FR_RADIUS, m_nextdirection);
             m_creature->SummonCreature(NPC_ORB_CARRIER, x, y, m_creature->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 5000);
-            m_timer = 30000;
+            m_timer = 20000;
             m_warning = false;
         }   else m_timer -= uiDiff;
     }
@@ -1025,7 +1081,7 @@ struct MANGOS_DLL_DECL mob_halion_orbAI : public BSWScriptedAI
         m_creature->SetRespawnDelay(7*DAY);
         SetCombatMovement(false);
         m_creature->SetPhaseMask(32, true);
-        m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        //m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         if (m_creature->GetEntry() == NPC_SHADOW_PULSAR_N)
         {
@@ -1039,6 +1095,8 @@ struct MANGOS_DLL_DECL mob_halion_orbAI : public BSWScriptedAI
         m_direction = 0.0f;
         nextPoint = 0;
         MovementStarted = false;
+        m_creature->SetSpeedRate(MOVE_WALK, 8.0f);
+        m_creature->SetSpeedRate(MOVE_RUN, 8.0f);
         pInstance->SetData(m_flag, DONE);
         debug_log("EventMGR: creature %u assume m_flag %u ",m_creature->GetEntry(),m_flag);
     }
@@ -1075,6 +1133,8 @@ struct MANGOS_DLL_DECL mob_halion_orbAI : public BSWScriptedAI
             focus->GetNearPoint2D(x, y, FR_RADIUS, m_direction);
             else m_creature->ForcedDespawn();
 //        debug_log("EventMGR: creature %u go to move point %u ",m_creature->GetEntry(),id);
+        m_creature->SetSpeedRate(MOVE_WALK, 8.0f);
+        m_creature->SetSpeedRate(MOVE_RUN, 8.0f);
         m_creature->GetMotionMaster()->Clear();
         m_creature->GetMotionMaster()->MovePoint(id, x, y,  m_creature->GetPositionZ());
     }
@@ -1084,8 +1144,8 @@ struct MANGOS_DLL_DECL mob_halion_orbAI : public BSWScriptedAI
         if (!pInstance || pInstance->GetData(TYPE_HALION) != IN_PROGRESS) 
               m_creature->ForcedDespawn();
 
-        if (Unit* pTarget = doSelectRandomPlayerAtRange(2.0f))
-            doCast(SPELL_TWILIGHT_CUTTER, pTarget);
+        //if (Unit* pTarget = doSelectRandomPlayerAtRange(2.0f))
+        //    doCast(SPELL_TWILIGHT_CUTTER, pTarget);
 
         if (!MovementStarted && pInstance->GetData(m_flag) == SPECIAL)
         {
@@ -1122,7 +1182,7 @@ struct MANGOS_DLL_DECL mob_orb_carrierAI : public BSWScriptedAI
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         MovementStarted = false;
         m_creature->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
-        m_creature->SetSpeedRate(MOVE_RUN, 6.0f);
+        m_creature->SetSpeedRate(MOVE_RUN, 8.0f);
     }
 
     void AttackStart(Unit *pWho)
@@ -1148,8 +1208,8 @@ struct MANGOS_DLL_DECL mob_orb_carrierAI : public BSWScriptedAI
         if (!pInstance || pInstance->GetData(TYPE_HALION) != IN_PROGRESS)
               m_creature->ForcedDespawn();
 
-        if (Unit* pTarget = doSelectRandomPlayerAtRange(2.0f))
-            doCast(SPELL_TWILIGHT_CUTTER, pTarget);
+        //if (Unit* pTarget = doSelectRandomPlayerAtRange(2.0f))
+        //    doCast(SPELL_TWILIGHT_CUTTER, pTarget);
 
         if (!MovementStarted)
         {

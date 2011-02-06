@@ -6,7 +6,10 @@ UPDATE `creature_template` SET `ScriptName`='boss_halion_twilight', `AIName` =''
 UPDATE `creature_template` SET `ScriptName`='mob_halion_meteor', `AIName` ='' WHERE `entry` = 40029;
 UPDATE `creature_template` SET `ScriptName`='mob_halion_flame', `AIName` ='' WHERE `entry` IN (40041);
 UPDATE `creature_template` SET `ScriptName`='mob_halion_control', `AIName` ='' WHERE `entry` IN (40146);
-UPDATE `creature_template` SET `ScriptName`='mob_halion_orb', `AIName` ='' WHERE `entry` IN (40083,40100);
+UPDATE `creature_template` SET `ScriptName`='mob_halion_orb', `AIName` ='' WHERE `entry` IN (40083,40100, 40468, 40469);
+UPDATE `creature_template` SET `minhealth`=100000000, `maxhealth`=100000000, speed_walk=4.8 where `entry` IN (40100, 40083, 40468, 40469);
+DELETE FROM `spell_patch` WHERE `entry` = 77844;
+INSERT INTO `spell_patch`(`entry`,`dbc`,`data`,`comment`) VALUES ( '77844 ','Spell.dbc','86 77 89 0','Ruby Sanctum - Halion - Twilight Cutter will cast on player');
 UPDATE `creature_template` SET `ScriptName`='mob_orb_rotation_focus', `AIName` ='' WHERE `entry` = 40091;
 UPDATE `creature_template` SET `ScriptName`='mob_orb_carrier', `AIName` ='' WHERE `entry` = 40081;
 UPDATE `creature_template` SET `ScriptName`='mob_fiery_combustion', `AIName` ='' WHERE `entry` = 40001;
