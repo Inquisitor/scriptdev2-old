@@ -1026,6 +1026,8 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
 
                     if (!player->IsInMap(m_creature)) continue;
 
+                    if (!player->HasAura(SPELL_TWILIGHT_ENTER)) continue;
+
                     if (player->isAlive())
                     {
                         float AB = m_pulsar_N->GetDistance2d(m_pulsar_S)+1;
