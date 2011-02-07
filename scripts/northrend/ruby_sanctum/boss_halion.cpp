@@ -958,7 +958,7 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         m_direction = 0.0f;
         m_nextdirection = 0.0f;
-        m_timer = 40000;
+        m_timer = 50000;
         m_warning = false;
 
         m_pulsar_N = m_creature->GetMap()->GetCreature(pInstance->GetData64(NPC_SHADOW_PULSAR_N));
@@ -1002,13 +1002,13 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
             debug_log("EventMGR: creature %u send direction %u ",m_creature->GetEntry(),pInstance->GetData(DATA_ORB_DIRECTION));
         }
 
-        if (m_timer - 3000 <= uiDiff && !m_warning)
+        if (m_timer%30000 - 3000 <= uiDiff && !m_warning)
         {
             DoScriptText(EMOTE_WARNING, m_creature);
             m_warning = true;
         }
 
-        if (m_timer > 10000 && m_timer < 20000)
+        if (m_timer > 20000 && m_timer < 30000)
         {
             m_pulsar_N->CastSpell(m_pulsar_S, SPELL_TWILIGHT_CUTTER_CHANNEL, true);
 
@@ -1048,7 +1048,7 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
             float x,y;
             m_creature->GetNearPoint2D(x, y, FR_RADIUS, m_nextdirection);
             m_creature->SummonCreature(NPC_ORB_CARRIER, x, y, m_creature->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN, 5000);
-            m_timer = 20000;
+            m_timer = 30000;
             m_warning = false;
         }   else m_timer -= uiDiff;
     }
