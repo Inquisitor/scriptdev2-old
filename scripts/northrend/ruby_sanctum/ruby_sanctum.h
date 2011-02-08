@@ -21,7 +21,7 @@ enum
     TYPE_HALION_EVENT              = 7,
     TYPE_HALION_BERSERK            = 8,
 
-    HALION_BERSERK_TIMER           = 480000,
+    HALION_BERSERK_TIMER           = 600000,
 
     COUNTER_OFF                    = 255,
 
