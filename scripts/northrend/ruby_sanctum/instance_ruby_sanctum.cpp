@@ -41,6 +41,8 @@ struct MANGOS_DLL_DECL instance_ruby_sanctum : public ScriptedInstance
     uint32 m_auiEventTimer;
     uint32 m_auiHalionEvent;
     uint32 m_auiHalionBerserk;
+    uint32 m_auiHalionDmgTakenReal;
+    uint32 m_auiHalionDmgTakenTwilight;
 
     uint32 m_auiOrbDirection;
     uint32 m_auiOrbNState;
@@ -285,6 +287,8 @@ struct MANGOS_DLL_DECL instance_ruby_sanctum : public ScriptedInstance
                                     uiData = NOT_STARTED;
                                     break;
             case TYPE_HALION_BERSERK: m_auiHalionBerserk = uiData; break;
+            case TYPE_HALION_DMG_TAKEN_REAL:     m_auiHalionDmgTakenReal = uiData; break;
+            case TYPE_HALION_DMG_TAKEN_TWILIGHT: m_auiHalionDmgTakenTwilight = uiData; break;
         }
 
         if (uiData == DONE)
@@ -349,6 +353,8 @@ struct MANGOS_DLL_DECL instance_ruby_sanctum : public ScriptedInstance
             case DATA_ORB_N:                return m_auiOrbNState;
             case DATA_ORB_S:                return m_auiOrbSState;
             case TYPE_HALION_BERSERK:       return m_auiHalionBerserk;
+            case TYPE_HALION_DMG_TAKEN_REAL:     return m_auiHalionDmgTakenReal;
+            case TYPE_HALION_DMG_TAKEN_TWILIGHT: return m_auiHalionDmgTakenTwilight;
 
         }
         return 0;

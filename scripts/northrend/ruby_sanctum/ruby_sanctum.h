@@ -20,6 +20,8 @@ enum
     TYPE_COUNTER                   = 6, // for WorldUpdateState
     TYPE_HALION_EVENT              = 7,
     TYPE_HALION_BERSERK            = 8,
+    TYPE_HALION_DMG_TAKEN_REAL     = 9,
+    TYPE_HALION_DMG_TAKEN_TWILIGHT = 10,
 
     HALION_BERSERK_TIMER           = 600000,
 
