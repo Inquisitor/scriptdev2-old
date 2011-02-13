@@ -23,7 +23,7 @@ enum
     TYPE_HALION_DMG_TAKEN_REAL     = 9,
     TYPE_HALION_DMG_TAKEN_TWILIGHT = 10,
 
-    HALION_BERSERK_TIMER           = 600000,
+    HALION_BERSERK_TIMER           = 480000,
 
     COUNTER_OFF                    = 255,
 
