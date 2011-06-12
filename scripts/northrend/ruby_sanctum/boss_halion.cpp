@@ -1282,7 +1282,7 @@ struct MANGOS_DLL_DECL mob_halion_orbAI : public BSWScriptedAI
     {
         if (!pInstance || pInstance->GetData(TYPE_HALION) != IN_PROGRESS) 
         {
-              m_creature->InterruptNonMeleeSpells();
+              m_creature->InterruptNonMeleeSpells(true);
               m_creature->ForcedDespawn();
         }
 
