@@ -1113,7 +1113,10 @@ struct MANGOS_DLL_DECL mob_orb_rotation_focusAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         if (!pInstance || pInstance->GetData(TYPE_HALION) != IN_PROGRESS) 
+        {
+              m_timer = 50000;
               m_creature->ForcedDespawn();
+        }
 
         if (pInstance->GetData(DATA_ORB_S) == DONE && pInstance->GetData(DATA_ORB_N) == DONE)
         {
@@ -1278,7 +1281,10 @@ struct MANGOS_DLL_DECL mob_halion_orbAI : public BSWScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         if (!pInstance || pInstance->GetData(TYPE_HALION) != IN_PROGRESS) 
+        {
+              m_creature->InterruptNonMeleeSpells();
               m_creature->ForcedDespawn();
+        }
 
         if (!MovementStarted && pInstance->GetData(m_flag) == SPECIAL)
         {
