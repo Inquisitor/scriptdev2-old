@@ -174,7 +174,7 @@ struct MANGOS_DLL_DECL boss_fjolaAI : public BSWScriptedAI
                    if (timedQuery(SPELL_LIGHT_VORTEX, uiDiff))
                       {
                             m_pInstance->SetData(DATA_CASTING_VALKYRS, SPELL_LIGHT_VORTEX);
-                            DoScriptText(-1713538,m_creature);
+                            //DoScriptText(-1713538,m_creature);
                             stage = 1;
                             break;
                       };
@@ -182,9 +182,9 @@ struct MANGOS_DLL_DECL boss_fjolaAI : public BSWScriptedAI
                        && m_creature->GetHealthPercent() <= 50.0f)
                       {
                             m_creature->InterruptNonMeleeSpells(true);
-                            doCast(SPELL_SHIELD_LIGHT);
+                            //doCast(SPELL_SHIELD_LIGHT);
                             m_pInstance->SetData(DATA_CASTING_VALKYRS, SPELL_TWIN_PACT_L);
-                            DoScriptText(-1713539,m_creature);
+                            //DoScriptText(-1713539,m_creature);
                             stage = 3;
                       };
                    };
@@ -193,7 +193,7 @@ struct MANGOS_DLL_DECL boss_fjolaAI : public BSWScriptedAI
                                    doCast(SPELL_TWIN_POWER);
                 break;
          case 1:
-                    doCast(SPELL_LIGHT_VORTEX);
+                    //doCast(SPELL_LIGHT_VORTEX);
                     stage = 2;
                 break;
          case 2:
@@ -331,7 +331,7 @@ struct MANGOS_DLL_DECL boss_eydisAI : public BSWScriptedAI
                    if (timedQuery(SPELL_DARK_VORTEX, uiDiff))
                       {
                             m_pInstance->SetData(DATA_CASTING_VALKYRS, SPELL_DARK_VORTEX);
-                            DoScriptText(-1713540,m_creature);
+                            //DoScriptText(-1713540,m_creature);
                             stage = 1;
                             break;
                       };
@@ -339,9 +339,9 @@ struct MANGOS_DLL_DECL boss_eydisAI : public BSWScriptedAI
                        && m_creature->GetHealthPercent() <= 50.0f)
                       {
                             m_creature->InterruptNonMeleeSpells(true);
-                            doCast(SPELL_SHIELD_DARK);
+                            //doCast(SPELL_SHIELD_DARK);
                             m_pInstance->SetData(DATA_CASTING_VALKYRS, SPELL_TWIN_PACT_H);
-                            DoScriptText(-1713539,m_creature);
+                            //DoScriptText(-1713539,m_creature);
                             stage = 3;
                             break;
                       };
@@ -351,7 +351,7 @@ struct MANGOS_DLL_DECL boss_eydisAI : public BSWScriptedAI
                                    doCast(SPELL_TWIN_POWER);
                 break;
          case 1:
-                    doCast(SPELL_DARK_VORTEX);
+                    //doCast(SPELL_DARK_VORTEX);
                     stage = 2;
                 break;
          case 2:
