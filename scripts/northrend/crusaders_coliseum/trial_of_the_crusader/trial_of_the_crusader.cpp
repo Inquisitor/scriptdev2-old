@@ -812,7 +812,7 @@ struct MANGOS_DLL_DECL npc_tirion_tocAI : public ScriptedAI
                if (pInstance->GetData(TYPE_DIFFICULTY) == RAID_DIFFICULTY_25MAN_NORMAL
                               ||  pInstance->GetData(TYPE_DIFFICULTY) == RAID_DIFFICULTY_25MAN_HEROIC)
                               {
-                              crusaderscount = 12;
+                              crusaderscount = 6;
                               switch (urand(0,3)){                                       // Healers, 3 in 25-mode
                                                  case 0: crusader[0] = NPC_CRUSADER_1_1;
                                                          crusader[1] = NPC_CRUSADER_1_12;
@@ -876,7 +876,7 @@ struct MANGOS_DLL_DECL npc_tirion_tocAI : public ScriptedAI
                                crusader[11] = NPC_CRUSADER_0_2;
 
                               } else {
-                              crusaderscount = 6;
+                              crusaderscount = 3;
                               switch (urand(0,5)){                                       // Healers, 2 in 10-mode
                                                  case 0: crusader[0] = NPC_CRUSADER_1_1;
                                                          crusader[1] = NPC_CRUSADER_1_12;
@@ -961,7 +961,7 @@ struct MANGOS_DLL_DECL npc_tirion_tocAI : public ScriptedAI
                if (pInstance->GetData(TYPE_DIFFICULTY) == RAID_DIFFICULTY_25MAN_NORMAL 
                               ||  pInstance->GetData(TYPE_DIFFICULTY) == RAID_DIFFICULTY_25MAN_HEROIC)
                               {
-                              crusaderscount = 12;
+                              crusaderscount = 6;
                               switch (urand(0,3)){                                       // Healers, 3 in 25-mode
                                                  case 0: crusader[0] = NPC_CRUSADER_2_1;
                                                          crusader[1] = NPC_CRUSADER_2_12;
@@ -1025,7 +1025,7 @@ struct MANGOS_DLL_DECL npc_tirion_tocAI : public ScriptedAI
                                crusader[11] = NPC_CRUSADER_0_2;
 
                               } else {
-                              crusaderscount = 6;
+                              crusaderscount = 3;
                               switch (urand(0,5)){                                       // Healers, 2 in 10-mode
                                                  case 0: crusader[0] = NPC_CRUSADER_2_1;
                                                          crusader[1] = NPC_CRUSADER_2_12;
